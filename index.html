@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Daily Life</title>
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --panel: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #d9e2ec;
+      --teal: #14b8a6;
+      --teal-dark: #0f766e;
+      --blue: #2563eb;
+      --orange: #f97316;
+      --violet: #7c3aed;
+      --slate: #334155;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(20, 184, 166, .18), transparent 34%),
+        radial-gradient(circle at top right, rgba(124, 58, 237, .16), transparent 30%),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+    }
+
+    aside {
+      background: linear-gradient(180deg, #0f172a, #1e293b);
+      color: white;
+      padding: 26px 20px;
+      box-shadow: 18px 0 45px rgba(15, 23, 42, .14);
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .tagline {
+      color: #cbd5e1;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .step {
+      width: 100%;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      color: #cbd5e1;
+      padding: 12px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .step.active {
+      background: #1e293b;
+      color: white;
+    }
+
+    main {
+      padding: 28px;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .status-pill {
+      background: var(--panel);
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 13px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .page {
+      display: none;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 24px;
+      min-height: 590px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, .09);
+    }
+
+    .page.active { display: block; }
+
+    .hero {
+      max-width: 820px;
+    }
+
+    .hero h2 {
+      font-size: 34px;
+      margin: 0 0 10px;
+      line-height: 1.1;
+    }
+
+    .muted {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .06);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin: 14px 0 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 12px;
+      font: inherit;
+      background: white;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 78px;
+      resize: vertical;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    button.primary, button.secondary, button.warn, button.violet, button.dark {
+      border: 0;
+      border-radius: 8px;
+      color: white;
+      padding: 11px 15px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    button.primary { background: var(--teal); }
+    button.primary:hover { background: var(--teal-dark); }
+    button.secondary { background: var(--blue); }
+    button.warn { background: var(--orange); }
+    button.violet { background: var(--violet); }
+    button.dark { background: var(--slate); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 14px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 11px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    tr.current {
+      background: #ecfeff;
+      outline: 2px solid #99f6e4;
+    }
+
+    .study-panel {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #f8fafc;
+      margin-top: 14px;
+    }
+
+    .timer {
+      font-size: 38px;
+      font-weight: 900;
+    }
+
+    .notification-banner {
+      border-left: 4px solid var(--violet);
+      background: #f5f3ff;
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #4c1d95;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+
+    .name-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(20, 184, 166, .30), transparent 32%),
+        radial-gradient(circle at 80% 0%, rgba(124, 58, 237, .28), transparent 34%),
+        rgba(15, 23, 42, .72);
+      backdrop-filter: blur(12px);
+    }
+
+    .name-card {
+      width: min(520px, 100%);
+      background: white;
+      border-radius: 8px;
+      padding: 26px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .24);
+    }
+
+    .name-card h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .review-box, .notes-box {
+      white-space: pre-wrap;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #f8fafc;
+      line-height: 1.55;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 850px) {
+      .app { grid-template-columns: 1fr; }
+      aside { position: static; }
+      .grid, .two, .study-panel { grid-template-columns: 1fr; }
+      main { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="name-gate" id="nameGate">
+    <div class="name-card">
+      <h2>Welcome to Student Daily Life</h2>
+      <p class="muted">Tell the assistant your name first, then it will personalize the whole experience for you.</p>
+      <label>Your name</label>
+      <input id="gateName" value="Mariam" />
+      <div class="actions">
+        <button class="primary" onclick="enterApp()">Enter My Smart Planner</button>
+      </div>
+    </div>
+  </div>
+  <div class="app">
+    <aside>
+      <div class="brand">Student<br>Daily Life</div>
+      <div class="tagline">Smart planner, study mode, notification center, and weekly progress.</div>
+      <button class="step active" data-page="start">Start</button>
+      <button class="step" data-page="daily">Daily Life</button>
+      <button class="step" data-page="goals">Study Goals</button>
+      <button class="step" data-page="review">AI Review</button>
+      <button class="step" data-page="plan">Plan</button>
+      <button class="step" data-page="notifications">Notifications</button>
+      <button class="step" data-page="report">Weekly Report</button>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div>
+          <h1>Student Daily Life</h1>
+          <div class="muted">A clean web view for your hackathon demo.</div>
+        </div>
+        <div class="status-pill" id="statusPill">Step 1 of 7</div>
+      </div>
+
+      <section class="page active" id="start">
+        <div class="hero">
+          <h2 id="heroTitle">Your day becomes a smart study plan.</h2>
+          <p class="muted" id="heroSubtitle">Answer a few questions, generate a schedule, start Study Mode, then let the app guide you with quiet smart notifications.</p>
+        </div>
+        <div class="grid">
+          <div class="card"><h3>Daily scanner</h3><p class="muted">Reads your morning, afternoon, evening, and free time.</p></div>
+          <div class="card"><h3>Smart planner</h3><p class="muted">Ranks subjects by goal, worry, energy, and time.</p></div>
+          <div class="card"><h3>Study mode</h3><p class="muted">Runs the plan with timer, breaks, movement reminders, and progress tracking.</p></div>
+        </div>
+        <div class="actions"><button class="primary" onclick="go('daily')">Start Questions</button></div>
+      </section>
+
+      <section class="page" id="daily">
+        <h2>Daily Life Questions</h2>
+        <p class="muted">Tell the assistant what your day looks like.</p>
+        <label>Student name</label>
+        <input id="name" value="Mariam" />
+        <label>What do you do in the morning?</label>
+        <input id="morning" value="School, breakfast" />
+        <label>What do you do in the afternoon?</label>
+        <input id="afternoon" value="Lunch, homework, rest" />
+        <label>What do you do in the evening?</label>
+        <input id="evening" value="Family time" />
+        <div class="two">
+          <div><label>Free time starts</label><input id="freeStart" value="16:00" /></div>
+          <div><label>Free time ends</label><input id="freeEnd" value="20:00" /></div>
+        </div>
+        <div class="actions"><button class="primary" onclick="go('goals')">Continue</button></div>
+      </section>
+
+      <section class="page" id="goals">
+        <h2>Study Goals</h2>
+        <p class="muted">Give the planner enough data to feel smart.</p>
+        <label>Subjects, separated by commas</label>
+        <input id="subjects" value="Math, Science, English" />
+        <label>Today's main goal</label>
+        <input id="goal" value="Finish Math homework" />
+        <label>What feels hard or worrying?</label>
+        <input id="worries" value="Math exam" />
+        <div class="two">
+          <div>
+            <label>Energy right now</label>
+            <select id="energy">
+              <option>High and fresh</option>
+              <option selected>Medium</option>
+              <option>Low or tired</option>
+            </select>
+          </div>
+          <div>
+            <label>Learning style</label>
+            <select id="learningStyle">
+              <option>Practice problems</option>
+              <option>Reading notes</option>
+              <option>Videos and examples</option>
+              <option selected>Mixed</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions"><button class="primary" onclick="prepareReview()">Analyze My Answers</button></div>
+      </section>
+
+      <section class="page" id="review">
+        <h2>AI Review</h2>
+        <p class="muted">Review the assistant's understanding before generating the schedule.</p>
+        <div class="review-box" id="reviewBox"></div>
+        <div class="actions"><button class="primary" onclick="generatePlan()">Create Final Schedule</button></div>
+      </section>
+
+      <section class="page" id="plan">
+        <h2>Your Smart Study Schedule</h2>
+        <div class="notification-banner" id="latestNotice">Generate a plan, then press Start Study Mode.</div>
+        <table>
+          <thead><tr><th>Time</th><th>Type</th><th>Task</th><th>Smart reason</th></tr></thead>
+          <tbody id="planRows"></tbody>
+        </table>
+        <div class="study-panel">
+          <div>
+            <div class="muted">Current timer</div>
+            <div class="timer" id="timer">00:00</div>
+          </div>
+          <div>
+            <strong id="studyStatus">Study Mode is waiting.</strong>
+            <div class="actions">
+              <button class="primary" onclick="startStudyMode()">Start Study Mode</button>
+              <button class="secondary" onclick="finishCurrent('completed')">Done Current</button>
+              <button class="warn" onclick="finishCurrent('skipped')">Skip Current</button>
+              <button class="violet" onclick="go('notifications')">Open Notifications</button>
+            </div>
+          </div>
+        </div>
+        <div class="notes-box" id="coachNotes"></div>
+      </section>
+
+      <section class="page" id="notifications">
+        <h2>Smart Notification Center</h2>
+        <p class="muted">Notifications stay here, so the app does not crowd your screen.</p>
+        <div class="notification-banner" id="noticeBanner">No notifications yet.</div>
+        <table>
+          <thead><tr><th>Time</th><th>Type</th><th>Smart notification</th></tr></thead>
+          <tbody id="noticeRows"></tbody>
+        </table>
+        <div class="actions">
+          <button class="primary" onclick="go('plan')">Back to Plan</button>
+          <button class="dark" onclick="clearNotifications()">Clear Notifications</button>
+        </div>
+      </section>
+
+      <section class="page" id="report">
+        <h2>Weekly Report</h2>
+        <p class="muted">Your weekly commitment report is saved in this browser.</p>
+        <div class="review-box" id="reportBox"></div>
+        <div class="actions"><button class="primary" onclick="renderReport()">Refresh Report</button></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const pages = ["start", "daily", "goals", "review", "plan", "notifications", "report"];
+    const minuteMs = 60000;
+    const exerciseMinutes = 15;
+    let plan = [];
+    let currentIndex = 0;
+    let running = false;
+    let remainingSeconds = 0;
+    let tickJob = null;
+    let moveJob = null;
+    let sessionId = null;
+    const breakIdeas = [
+      { title: "Brain reset", reason: "Stand up, drink water, and look away from the screen." },
+      { title: "Energy refill", reason: "Walk for two minutes and stretch your shoulders." },
+      { title: "Memory lock", reason: "Close your notes and say the last idea out loud." },
+      { title: "Calm break", reason: "Take five slow breaths and relax your eyes." },
+      { title: "Mini movement", reason: "Do 8 slow squats or walk around the room." },
+      { title: "Focus refresh", reason: "Tidy your desk, sip water, and return with one clear target." },
+      { title: "Screen pause", reason: "Keep your phone away and rest your eyes for the whole break." },
+      { title: "Confidence check", reason: "Write one thing you understood before starting the next block." }
+    ];
+    const coachNotesPool = [
+      "Start each block with one tiny target, not a huge promise.",
+      "Use the first 3 minutes to skim what you already know.",
+      "If you get stuck, write the question instead of staring at the page.",
+      "After solving a problem, explain the steps like you are teaching a friend.",
+      "Put the phone outside your reach during deep focus.",
+      "Use active recall: close the book and test yourself.",
+      "Mark confusing points with a question mark and keep moving.",
+      "End each block with a one-line summary.",
+      "During breaks, move your body instead of scrolling.",
+      "Start hard subjects earlier while your focus is stronger.",
+      "If focus drops twice, switch to a lighter task for one block.",
+      "Do not rewrite everything; summarize only what matters.",
+      "Reward progress, not perfection.",
+      "Use examples when a rule feels abstract.",
+      "Before sleep, review only the key points, not the whole chapter.",
+      "Keep water beside you before Study Mode starts.",
+      "Turn mistakes into a mini checklist for tomorrow.",
+      "When energy is low, choose short wins and keep the chain alive."
+    ];
+
+    function enterApp() {
+      const typedName = document.getElementById("gateName").value.trim() || "Student";
+      localStorage.setItem("studentDailyLifeName", typedName);
+      document.getElementById("name").value = typedName;
+      personalizeName(typedName);
+      document.getElementById("nameGate").classList.add("hidden");
+      go("daily");
+    }
+
+    function personalizeName(name) {
+      document.getElementById("heroTitle").textContent = `${name}, your day becomes a smart study plan.`;
+      document.getElementById("heroSubtitle").textContent =
+        `Student Daily Life will guide ${name} from daily routine to study mode, notifications, and weekly progress.`;
+      document.querySelector(".tagline").textContent = `Personal smart planner for ${name}.`;
+    }
+
+    function value(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function go(id) {
+      pages.forEach(page => document.getElementById(page).classList.toggle("active", page === id));
+      document.querySelectorAll(".step").forEach(btn => btn.classList.toggle("active", btn.dataset.page === id));
+      document.getElementById("statusPill").textContent = `Step ${pages.indexOf(id) + 1} of ${pages.length}`;
+      if (id === "report") renderReport();
+    }
+
+    document.querySelectorAll(".step").forEach(btn => btn.addEventListener("click", () => go(btn.dataset.page)));
+
+    function parseMinutes(time) {
+      const [hours, minutes] = time.split(":").map(Number);
+      if (Number.isNaN(hours) || Number.isNaN(minutes)) throw new Error("Use HH:MM time format.");
+      return hours * 60 + minutes;
+    }
+
+    function formatMinutes(total) {
+      total = ((total % 1440) + 1440) % 1440;
+      const hours = String(Math.floor(total / 60)).padStart(2, "0");
+      const minutes = String(total % 60).padStart(2, "0");
+      return `${hours}:${minutes}`;
+    }
+
+    function minutesBetween(start, end) {
+      let diff = end - start;
+      if (diff <= 0) diff += 1440;
+      return diff;
+    }
+
+    function subjects() {
+      return value("subjects").split(",").map(item => item.trim()).filter(Boolean);
+    }
+
+    function energyLevel() {
+      const energy = value("energy").toLowerCase();
+      if (energy.includes("high") || energy.includes("fresh")) return "high";
+      if (energy.includes("low") || energy.includes("tired")) return "low";
+      return "medium";
+    }
+
+    function subjectPriority(subject) {
+      const text = `${subject} ${value("goal")} ${value("worries")}`.toLowerCase();
+      let score = 50;
+      ["hard", "difficult", "weak", "exam", "test", "quiz", "late", "behind"].forEach(word => {
+        if (text.includes(word)) score += 8;
+      });
+      ["easy", "revision", "review", "reading"].forEach(word => {
+        if (text.includes(word)) score -= 4;
+      });
+      if (value("goal").toLowerCase().includes(subject.toLowerCase())) score += 30;
+      if (value("worries").toLowerCase().includes(subject.toLowerCase())) score += 20;
+      return score;
+    }
+
+    function sessionLength(total, level) {
+      if (total < 90) return 25;
+      if (level === "high") return 50;
+      if (level === "low") return 25;
+      return 40;
+    }
+
+    function breakLength(level) {
+      if (level === "low") return 12;
+      if (level === "high") return 8;
+      return 10;
+    }
+
+    function smartReason(subject, level, index) {
+      if (value("goal").toLowerCase().includes(subject.toLowerCase())) return "Connected to today's main goal.";
+      if (value("worries").toLowerCase().includes(subject.toLowerCase())) return "Prioritized because it is a worry area.";
+      if (level === "high" && index === 0) return "Your energy is high, so deep work starts here.";
+      if (level === "low") return "Shorter focus keeps progress realistic.";
+      return "Balanced rotation keeps your brain fresh.";
+    }
+
+    function prepareReview() {
+      const start = parseMinutes(value("freeStart"));
+      const end = parseMinutes(value("freeEnd"));
+      const total = minutesBetween(start, end);
+      document.getElementById("reviewBox").textContent =
+        `Student Daily Life AI Review\n` +
+        `----------------------------------\n` +
+        `Student: ${value("name") || "Student"}\n` +
+        `Free time: ${value("freeStart")} to ${value("freeEnd")} (${total} minutes)\n` +
+        `Subjects: ${subjects().join(", ")}\n` +
+        `Main goal: ${value("goal") || "Not specified"}\n` +
+        `Hard area: ${value("worries") || "None"}\n` +
+        `Energy: ${value("energy")}\n` +
+        `Learning style: ${value("learningStyle")}\n\n` +
+        `Smart prediction:\nThe final page will rank subjects, add breaks, and explain each block.`;
+      go("review");
+    }
+
+    function generatePlan() {
+      const start = parseMinutes(value("freeStart"));
+      const end = parseMinutes(value("freeEnd"));
+      const total = minutesBetween(start, end);
+      const level = energyLevel();
+      const session = sessionLength(total, level);
+      const breakMins = breakLength(level);
+      const ranked = subjects().sort((a, b) => subjectPriority(b) - subjectPriority(a));
+      let current = start;
+      let remaining = total;
+      let index = 0;
+      plan = [];
+
+      if (total >= 35) {
+        plan.push({ start: current, end: current + 5, type: "setup", title: "AI warm-up", reason: "Write the exact goal for this study window." });
+        current += 5;
+        remaining -= 5;
+      }
+
+      while (remaining >= 20 && ranked.length) {
+        const subject = ranked[index % ranked.length];
+        let actual = Math.min(session, remaining);
+        if (remaining - actual < 15 && remaining > actual) actual = remaining;
+        plan.push({ start: current, end: current + actual, type: "study", title: subject, reason: smartReason(subject, level, index) });
+        current += actual;
+        remaining -= actual;
+        index++;
+        if (remaining >= breakMins + 20) {
+          plan.push({ start: current, end: current + breakMins, type: "break", title: "Brain reset", reason: "Stand up, drink water, and keep your phone away." });
+          current += breakMins;
+          remaining -= breakMins;
+        }
+      }
+
+      renderPlan();
+      addNotification("SYSTEM", "Assistant: Your plan is ready. Press Start Study Mode when you want guided execution.", false);
+      go("plan");
+    }
+
+    function renderPlan() {
+      const rows = document.getElementById("planRows");
+      rows.innerHTML = "";
+      plan.forEach((block, index) => {
+        const tr = document.createElement("tr");
+        tr.dataset.index = index;
+        tr.innerHTML = `<td>${formatMinutes(block.start)} - ${formatMinutes(block.end)}</td><td>${block.type.toUpperCase()}</td><td>${block.title}</td><td>${block.reason}</td>`;
+        rows.appendChild(tr);
+      });
+      document.getElementById("coachNotes").textContent =
+        `AI diagnosis:\n` +
+        `* I found ${minutesBetween(parseMinutes(value("freeStart")), parseMinutes(value("freeEnd")))} minutes of usable time.\n` +
+        `* Energy detected: ${energyLevel()}.\n` +
+        `* Learning style: ${value("learningStyle")}.\n\n` +
+        `Coach notes:\n* Before every study block, write one tiny target.\n* After every block, rate focus from 1 to 5.\n* If focus is under 3 twice, switch to a lighter block.`;
+    }
+
+    function startStudyMode() {
+      if (!plan.length) return alert("Create a schedule first.");
+      if (running) return;
+      running = true;
+      currentIndex = 0;
+      sessionId = new Date().toISOString();
+      startCurrent();
+    }
+
+    function startCurrent() {
+      clearTimeout(tickJob);
+      clearTimeout(moveJob);
+      if (currentIndex >= plan.length) return finishSession();
+      const block = plan[currentIndex];
+      remainingSeconds = Math.max(1, block.end - block.start) * 60;
+      document.querySelectorAll("#planRows tr").forEach(row => row.classList.toggle("current", Number(row.dataset.index) === currentIndex));
+      document.getElementById("studyStatus").textContent = `Now: ${block.title} (${block.type})`;
+      if (block.type === "break") addNotification("BREAK", "Recovery cue: Break time. Stand up, breathe, and reset.");
+      else if (block.type === "setup") addNotification("SYSTEM", "Assistant: Warm-up time. Write your exact goal and clear your desk.");
+      else addNotification("STUDY", `Focus cue: Study ${block.title} now. Focus on one tiny target.`);
+      tick();
+      if (block.type === "study" && block.end - block.start > exerciseMinutes) {
+        moveJob = setTimeout(moveReminder, exerciseMinutes * minuteMs);
+      }
+    }
+
+    function tick() {
+      if (!running) return;
+      const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, "0");
+      const seconds = String(remainingSeconds % 60).padStart(2, "0");
+      document.getElementById("timer").textContent = `${minutes}:${seconds}`;
+      if (remainingSeconds <= 0) return finishCurrent("completed");
+      remainingSeconds--;
+      tickJob = setTimeout(tick, 1000);
+    }
+
+    function moveReminder() {
+      if (!running || !plan[currentIndex] || plan[currentIndex].type !== "study") return;
+      const low = ["Do slow shoulder stretches for 45 seconds.", "Walk calmly and drink water.", "Take 5 deep breaths and stretch your back."];
+      const high = ["Do 10 jumping jacks.", "Run in place for 30 seconds.", "Do 8 quick squats."];
+      const medium = ["Stretch your arms.", "Walk around the room twice.", "Do 8 slow squats."];
+      const list = energyLevel() === "low" ? low : energyLevel() === "high" ? high : medium;
+      addNotification("MOVE", `Body reset: ${list[Math.floor(Math.random() * list.length)]}`);
+      if (remainingSeconds > exerciseMinutes * 60) moveJob = setTimeout(moveReminder, exerciseMinutes * minuteMs);
+    }
+
+    function finishCurrent(status) {
+      if (!running || !plan[currentIndex]) return;
+      const block = plan[currentIndex];
+      const history = JSON.parse(localStorage.getItem("studentDailyLifeHistory") || "[]");
+      history.push({
+        date: new Date().toISOString().slice(0, 10),
+        sessionId,
+        title: block.title,
+        type: block.type,
+        status,
+        plannedStart: formatMinutes(block.start),
+        plannedEnd: formatMinutes(block.end),
+        finishedAt: new Date().toTimeString().slice(0, 5)
+      });
+      localStorage.setItem("studentDailyLifeHistory", JSON.stringify(history));
+      currentIndex++;
+      startCurrent();
+    }
+
+    function finishSession() {
+      running = false;
+      clearTimeout(tickJob);
+      clearTimeout(moveJob);
+      document.getElementById("studyStatus").textContent = "Session finished. Open Weekly Report to see progress.";
+      document.getElementById("timer").textContent = "Done";
+      addNotification("SYSTEM", "Assistant: Session complete. Check your weekly report.");
+    }
+
+    function addNotification(kind, message, ring = true) {
+      const items = JSON.parse(localStorage.getItem("studentDailyLifeNotifications") || "[]");
+      items.push({ time: new Date().toTimeString().slice(0, 5), kind, message });
+      localStorage.setItem("studentDailyLifeNotifications", JSON.stringify(items.slice(-50)));
+      if (ring) {
+        try { new AudioContext().close(); } catch (_) {}
+      }
+      renderNotifications();
+    }
+
+    function renderNotifications() {
+      const items = JSON.parse(localStorage.getItem("studentDailyLifeNotifications") || "[]");
+      const latest = items.length ? items[items.length - 1].message : "No notifications yet.";
+      document.getElementById("latestNotice").textContent = latest;
+      document.getElementById("noticeBanner").textContent = latest;
+      document.getElementById("noticeRows").innerHTML = items.slice().reverse().map(item =>
+        `<tr><td>${item.time}</td><td>${item.kind}</td><td>${item.message}</td></tr>`
+      ).join("");
+    }
+
+    function clearNotifications() {
+      localStorage.removeItem("studentDailyLifeNotifications");
+      renderNotifications();
+    }
+
+    function renderReport() {
+      const history = JSON.parse(localStorage.getItem("studentDailyLifeHistory") || "[]");
+      const weekStart = new Date();
+      weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
+      weekStart.setHours(0, 0, 0, 0);
+      const weekItems = history.filter(item => new Date(item.date) >= weekStart);
+      const study = weekItems.filter(item => item.type === "study" || item.type === "setup");
+      const done = study.filter(item => item.status === "completed");
+      const skipped = study.filter(item => item.status === "skipped");
+      const rate = study.length ? Math.round(done.length / study.length * 100) : 0;
+      const level = rate >= 90 ? "Excellent" : rate >= 75 ? "Very good" : rate >= 55 ? "Good" : "Needs improvement";
+      const did = done.map(item => item.title).slice(-8).join(", ") || "Nothing completed yet.";
+      const missed = skipped.map(item => item.title).slice(-8).join(", ") || "Nothing skipped yet.";
+      document.getElementById("reportBox").textContent =
+        `Week starting: ${weekStart.toISOString().slice(0, 10)}\n\n` +
+        `Completed: ${done.length} / ${study.length}\n` +
+        `Skipped: ${skipped.length}\n` +
+        `Commitment rate: ${rate}%\n` +
+        `Level: ${level}\n\n` +
+        `You did: ${did}\n\n` +
+        `You missed: ${missed}`;
+    }
+
+    function boot() {
+      const savedName = localStorage.getItem("studentDailyLifeName");
+      if (savedName) {
+        document.getElementById("gateName").value = savedName;
+        document.getElementById("name").value = savedName;
+        personalizeName(savedName);
+        document.getElementById("nameGate").classList.add("hidden");
+      }
+      renderNotifications();
+      renderReport();
+    }
+
+    boot();
+  </script>
+</body>
+</html>
